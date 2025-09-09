@@ -153,3 +153,77 @@ body {
     margin-top: 7rem;
   }
 }
+
+/* General Body & Font Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar Enhancements */
+.navbar {
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link {
+    color: #555 !important;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+    .nav-link:hover, .dropdown-item:hover {
+        color: #0d6efd !important; /* Bootstrap Primary Blue */
+    }
+
+.navbar-brand {
+    letter-spacing: -0.5px;
+}
+
+.dropdown-menu {
+    border-radius: 0.5rem;
+    border: 1px solid #eee;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.1);
+}
+
+.dropdown-item i {
+    width: 20px; /* Aligns dropdown item text */
+}
+
+/* Main Content Area */
+main {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05);
+}
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #0d6efd; /* Primary Blue */
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+}
+/* --- About Us Page: Team Cards --- */
+.team-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 1.5rem rgba(0,0,0,.15) !important;
+    }
+
+    .team-card img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 3px solid #0d6efd;
+    }
+
+.team-social a {
+    margin: 0 0.25rem;
+}

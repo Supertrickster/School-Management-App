@@ -1,61 +1,102 @@
-@model IEnumerable<SchoolManagementApp.MVC.Data.Student>
+@model SchoolManagementApp.MVC.Models.StudentListViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Student Dashboard";
+    // Updated helper function to safely handle nullable DateTime?
+    Func<DateTime?, int?> GetAge = dob =>
+    {
+        if (!dob.HasValue)
+        {
+            return null;
+        }
+        var today = DateTime.Today;
+        var age = today.Year - dob.Value.Year;
+        if (dob.Value.Date > today.AddYears(-age)) age--;
+        return age;
+    };
 }
 
-<h1>Students</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Students</li>
+    </ol>
+</nav>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-             <td>
-                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                <button data-id="@item.Id" class="btn btn-danger deleteBtn" type="button">Delete</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Student Dashboard</h1>
+    <a asp-action="Create" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i>Add New Student</a>
+</div>
 
-<form asp-action="Delete" id="studentDeleteForm">
-    <input type="hidden" id="studentid" name="Id"/>
-</form>
+<div class="row mb-4">
+</div>
 
-@section Scripts{
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="fas fa-user-graduate me-2"></i>All Student Records</h3>
+    </div>
+    <div class="card-body">
+        <table id="studentsTable" class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Date of Birth</th>
+                    <th>Age</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Students)
+                {
+                    <tr id="student-row-@item.Id">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar me-3">@(item.FirstName[0])@(item.LastName[0])</div>
+                                <div>
+                                    <div class="fw-bold">@item.FirstName @item.LastName</div>
+                                    <div class="text-muted">student_id: @item.Id</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @* Safely format the nullable date, show "N/A" if null *@
+                            @(item.DateOfBirth.HasValue? item.DateOfBirth.Value.ToString("dd MMM, yyyy") : "N/A")
+                        </td>
+                        <td>
+                            @{
+                                var age = GetAge(item.DateOfBirth);
+                            }
+                            @* Safely display the age, show "N/A" if null *@
+                            @(age.HasValue ? $"{age} years" : "N/A")
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.Id" title="Details"><i class="fas fa-info-circle"></i></a>
+                                <a class="btn btn-outline-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                                <button data-id="@item.Id" class="btn btn-outline-danger btn-sm deleteBtn" type="button" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
     <script>
-        $(function(){
-            $('.table').DataTable();
+        // Your existing DataTable and SweetAlert2 script remains the same and will work perfectly.
+        $(document).ready(function () {
+            var table = $('#studentsTable').DataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": 3 } // Disable sorting on 'Actions' column
+                ]
+            });
 
-            $('.deleteBtn').click(function(e){
+            $('#studentsTable').on('click', '.deleteBtn', function () {
+                var button = $(this);
+                var id = button.data("id");
+
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -64,20 +105,24 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                            );
-                            var btn = $(this);
-                            var id = btn.data("id");
-                            $('#studentid').val(id);
-                            $('#studentDeleteForm').submit();
-                        }
-                    })
-            })
-        })
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/Students/Delete/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            }
+                        }).then(res => {
+                            if (res.ok) {
+                                table.row(button.closest('tr')).remove().draw();
+                                Swal.fire('Deleted!','The student record has been deleted.','success');
+                            } else {
+                                Swal.fire('Error!','Something went wrong.','error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
     </script>
 }

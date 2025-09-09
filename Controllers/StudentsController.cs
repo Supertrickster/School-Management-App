@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementApp.MVC.Data;
+using SchoolManagementApp.MVC.Models;
 
 namespace SchoolManagementApp.MVC.Controllers
 {
@@ -21,11 +22,25 @@ namespace SchoolManagementApp.MVC.Controllers
         }
 
         // GET: Students
+        // GET: Students
         public async Task<IActionResult> Index()
         {
-              return _context.Students != null ? 
-                          View(await _context.Students.ToListAsync()) :
-                          Problem("Entity set 'SchoolManagementDbContext.Students'  is null.");
+            if (_context.Students == null)
+            {
+                return Problem("Entity set 'SchoolManagementDbContext.Students' is null.");
+            }
+
+            var students = await _context.Students.ToListAsync();
+            var thirtyDaysAgo = DateTime.Now.AddDays(-30);
+
+            var viewModel = new StudentListViewModel
+            {
+                Students = students,
+                TotalStudents = students.Count,
+                NewStudentsLast30Days = students.Count(s => s.DateOfBirth > thirtyDaysAgo) // Example logic
+            };
+
+            return View(viewModel);
         }
 
         // GET: Students/Details/5

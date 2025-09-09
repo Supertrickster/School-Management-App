@@ -5,6 +5,9 @@ using SchoolManagementApp.MVC.Models;
 
 namespace SchoolManagementApp.MVC.Controllers;
 
+using SchoolManagementApp.MVC.Models;
+using Microsoft.EntityFrameworkCore;
+
 [AllowAnonymous]
 public class HomeController : Controller
 {
