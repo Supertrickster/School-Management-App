@@ -161,7 +161,7 @@ namespace SchoolManagementApp.MVC.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); ;
         }
 
         private bool CourseExists(int id)

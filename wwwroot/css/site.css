@@ -227,3 +227,222 @@ main {
 .team-social a {
     margin: 0 0.25rem;
 }
+/* --- Student Profile Page Styles --- */
+.profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #0d6efd; /* Primary Blue */
+    color: white;
+    font-weight: 600;
+    font-size: 3rem;
+    border: 4px solid #fff;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+}
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 4px solid #dee2e6; /* Light grey border */
+}
+/* --- About Page: Hero Section --- */
+.hero-section {
+    background-color: #e9ecef; /* Fallback */
+    background-image: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('/images/blackboard.jpg'); /* Add a subtle background image */
+    background-size: cover;
+    background-position: center;
+}
+
+/* --- About Page: Gradient Card --- */
+.bg-primary-gradient {
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+}
+
+/* --- About Page: Values List --- */
+.values-list li {
+    font-size: 1.1rem;
+    padding: 0.25rem 0;
+}
+
+/* --- About Page: Team Cards --- */
+.team-card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 1.5rem rgba(0,0,0,.15) !important;
+    }
+
+    .team-card img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid #0d6efd;
+        padding: 3px;
+        background-color: white;
+    }
+
+.team-social a {
+    margin: 0 0.25rem;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+    .team-social a:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+/* --- About Page: Call to Action (CTA) --- */
+.cta-section {
+    background: linear-gradient(45deg, #6610f2, #6f42c1); /* Bootstrap Indigo/Purple Gradient */
+}
+
+/* --- Basic Setup & Typography --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Light grey background */
+}
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar Styles --- */
+#sidebar {
+    width: 260px;
+    min-width: 260px;
+    transition: margin-left 0.3s ease-in-out;
+    color: #adb5bd;
+}
+
+.sidebar-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid #495057;
+}
+
+    .sidebar-header .navbar-brand {
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+.sidebar-nav {
+    padding: 1rem 0;
+    list-style: none;
+    margin: 0;
+}
+
+.sidebar-item {
+    padding: 0 1rem;
+}
+
+.sidebar-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #adb5bd;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+    .sidebar-link:hover, .sidebar-link.active {
+        background-color: #495057;
+        color: #fff;
+    }
+
+.sidebar-link-sub {
+    padding: 0.5rem 1.5rem;
+    color: #adb5bd;
+    text-decoration: none;
+    display: block;
+}
+
+    .sidebar-link-sub:hover {
+        color: #fff;
+    }
+
+.sidebar-link[data-bs-toggle="collapse"]::after {
+    content: '\f078'; /* Font Awesome chevron-down */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    float: right;
+    transition: transform .2s;
+}
+
+.sidebar-link[data-bs-toggle="collapse"][aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+
+/* --- Main Content Styles --- */
+#main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-header {
+    height: 60px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+}
+
+.content-wrapper {
+    flex-grow: 1;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 991.98px) {
+    #sidebar {
+        margin-left: -260px; /* Hide sidebar by default on smaller screens */
+    }
+
+        #sidebar.toggled {
+            margin-left: 0; /* Show sidebar when toggled */
+        }
+}
+/* --- Custom Error Page Styles --- */
+.error-container {
+    padding: 4rem 1rem;
+}
+
+.error-icon {
+    font-size: 6rem;
+    color: #dc3545; /* Bootstrap Danger Red */
+    margin-bottom: 1.5rem;
+    animation: bounce 2s infinite;
+}
+
+.request-id-container {
+    background-color: #f8f9fa; /* Light Grey */
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: inline-block;
+}
+
+/* Simple animation for the icon */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-30px);
+    }
+
+    60% {
+        transform: translateY(-15px);
+    }
+    /* --- Styles for Bootstrap Toggle Switch --- */
+    .form-switch.form-switch-lg {
+        font-size: 1.25rem;
+    }
+
+    .form-check-input {
+        cursor: pointer;
+    }

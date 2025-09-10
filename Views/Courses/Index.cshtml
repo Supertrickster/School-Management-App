@@ -1,61 +1,77 @@
 @model IEnumerable<SchoolManagementApp.MVC.Data.Course>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Course Management";
 }
 
-<h1>Courses</h1>
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="fas fa-book me-2"></i>Course Catalogue</h3>
+        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus me-2"></i>Create New Course</a>
+    </div>
+    <div class="card-body">
+        <table id="coursesTable" class="table table-striped table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Code)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Credits)
+                    </th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Code)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Credits)
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group" role="group">
+                                <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.Id" title="Details">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <a class="btn btn-outline-warning btn-sm" asp-action="Edit" asp-route-id="@item.Id" title="Edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <button data-id="@item.Id" class="btn btn-outline-danger btn-sm deleteBtn" type="button" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Credits)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Credits)
-            </td>
-            <td>
-                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a> 
-                <button data-id="@item.Id" class="btn btn-danger deleteBtn" type="button">Delete</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-<form asp-action="Delete" id="courseDeleteForm">
-    <input type="hidden" id="courseid" name="Id"/>
+<form asp-action="Delete" id="courseDeleteForm" method="post">
+    <input type="hidden" id="courseId" name="Id" />
 </form>
 
-@section Scripts{
+@section Scripts {
     <script>
-        $(function(){
-            $('.table').DataTable();
-            
-            $('.deleteBtn').click(function(e){
+        $(document).ready(function () {
+            // 1. Initialize the interactive DataTable
+            $('#coursesTable').DataTable();
+
+            // 2. Handle the delete button click
+            $('#coursesTable').on('click', '.deleteBtn', function () {
+                var id = $(this).data("id"); // Get the ID from the button
+
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -64,20 +80,14 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                            );
-                            var btn = $(this);
-                            var id = btn.data("id");
-                            $('#courseid').val(id);
-                            $('#courseDeleteForm').submit();
-                        }
-                    })
-            })
-        })
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, set the ID in the hidden form and submit it.
+                        $('#courseId').val(id);
+                        $('#courseDeleteForm').submit();
+                    }
+                });
+            });
+        });
     </script>
 }

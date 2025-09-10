@@ -46,7 +46,7 @@ namespace SchoolManagementApp.MVC.Migrations
 
                     b.HasIndex("LecturerId");
 
-                    b.ToTable("Classes");
+                    b.ToTable("Classes", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementApp.MVC.Data.Course", b =>
@@ -76,7 +76,7 @@ namespace SchoolManagementApp.MVC.Migrations
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementApp.MVC.Data.Enrollment", b =>
@@ -104,7 +104,7 @@ namespace SchoolManagementApp.MVC.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementApp.MVC.Data.Lecturer", b =>
@@ -128,7 +128,7 @@ namespace SchoolManagementApp.MVC.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Lecturer__3214EC071380BF1D");
 
-                    b.ToTable("Lecturers");
+                    b.ToTable("Lecturers", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementApp.MVC.Data.Student", b =>
@@ -155,7 +155,7 @@ namespace SchoolManagementApp.MVC.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Students__3214EC074CCF9327");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementApp.MVC.Data.Class", b =>

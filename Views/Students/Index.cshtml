@@ -2,13 +2,10 @@
 
 @{
     ViewData["Title"] = "Student Dashboard";
-    // Updated helper function to safely handle nullable DateTime?
+    // Helper function to calculate age
     Func<DateTime?, int?> GetAge = dob =>
     {
-        if (!dob.HasValue)
-        {
-            return null;
-        }
+        if (!dob.HasValue) return null;
         var today = DateTime.Today;
         var age = today.Year - dob.Value.Year;
         if (dob.Value.Date > today.AddYears(-age)) age--;
@@ -23,17 +20,10 @@
     </ol>
 </nav>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Student Dashboard</h1>
-    <a asp-action="Create" class="btn btn-primary rounded-pill px-4"><i class="fas fa-plus me-2"></i>Add New Student</a>
-</div>
-
-<div class="row mb-4">
-</div>
-
 <div class="card shadow-sm">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h3 class="mb-0"><i class="fas fa-user-graduate me-2"></i>All Student Records</h3>
+        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus me-2"></i>Add New Student</a>
     </div>
     <div class="card-body">
         <table id="studentsTable" class="table table-hover align-middle">
@@ -59,14 +49,12 @@
                             </div>
                         </td>
                         <td>
-                            @* Safely format the nullable date, show "N/A" if null *@
                             @(item.DateOfBirth.HasValue? item.DateOfBirth.Value.ToString("dd MMM, yyyy") : "N/A")
                         </td>
                         <td>
                             @{
                                 var age = GetAge(item.DateOfBirth);
                             }
-                            @* Safely display the age, show "N/A" if null *@
                             @(age.HasValue ? $"{age} years" : "N/A")
                         </td>
                         <td class="text-end">
@@ -83,19 +71,23 @@
     </div>
 </div>
 
+<form asp-action="Delete" id="studentDeleteForm" method="post">
+    <input type="hidden" id="studentId" name="Id" />
+</form>
+
 @section Scripts {
     <script>
-        // Your existing DataTable and SweetAlert2 script remains the same and will work perfectly.
         $(document).ready(function () {
+            // 1. Initialize the interactive DataTable
             var table = $('#studentsTable').DataTable({
                 "columnDefs": [
                     { "orderable": false, "targets": 3 } // Disable sorting on 'Actions' column
                 ]
             });
 
+            // 2. Handle the delete button click
             $('#studentsTable').on('click', '.deleteBtn', function () {
-                var button = $(this);
-                var id = button.data("id");
+                var id = $(this).data("id"); // Get the ID from the button
 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -107,19 +99,9 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch(`/Students/Delete/${id}`, {
-                            method: 'POST',
-                            headers: {
-                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                            }
-                        }).then(res => {
-                            if (res.ok) {
-                                table.row(button.closest('tr')).remove().draw();
-                                Swal.fire('Deleted!','The student record has been deleted.','success');
-                            } else {
-                                Swal.fire('Error!','Something went wrong.','error');
-                            }
-                        });
+                        // If confirmed, set the ID in the hidden form and submit it.
+                        $('#studentId').val(id);
+                        $('#studentDeleteForm').submit();
                     }
                 });
             });

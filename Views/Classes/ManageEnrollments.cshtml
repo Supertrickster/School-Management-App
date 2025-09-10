@@ -4,75 +4,97 @@
     ViewData["Title"] = "Manage Enrollments";
 }
 
-<h2>Manage Enrollments for @Model.Class.Time Session of @Model.Class.CourseName </h2>
-<h3>Instructor: @Model.Class.LecturerName </h3>
-
-<hr/>
-<h3>Student List</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var student in Model.Students) {
-        <tr>
-            <td>@student.FirstName</td>
-            <td>@student.LastName</td>
-            <td>
-                @* @if(student.IsEnrolled){
-                    <button data-studentId="@student.Id" data-shouldEnroll="false" class="btn btn-danger enrollemntBtn" type="button">Remove</button>
-                }else{
-                    <button data-studentId="@student.Id" data-shouldEnroll="true" class="btn btn-success enrollemntBtn" type="button">Add</button>
-                } *@
-
-                @{
-                    string btnText = student.IsEnrolled ? "Remove" : "Add";
-                    string btnClass = student.IsEnrolled ? "danger" : "success";
-                    bool shouldEnroll = !student.IsEnrolled;
+<div class="card shadow-sm">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="mb-0"><i class="fas fa-tasks me-2"></i>Manage Enrollments</h3>
+                <p class="mb-0 text-muted">@Model.Class.CourseName (@Model.Class.Time) - Prof. @Model.Class.LecturerName</p>
+            </div>
+            <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Classes</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <p>Toggle the switch to enroll or unenroll a student from this class.</p>
+        <table id="enrollmentTable" class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Student Name</th>
+                    <th class="text-center">Is Enrolled?</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar me-3">@(student.FirstName[0])@(student.LastName[0])</div>
+                                <div>
+                                    <div class="fw-bold">@student.FirstName @student.LastName</div>
+                                    <div class="text-muted small">Student ID: @student.Id</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="form-check form-switch form-switch-lg d-inline-block">
+                                <input class="form-check-input enrollment-toggle"
+                                       type="checkbox"
+                                       role="switch"
+                                       data-studentid="@student.Id"
+                                       @(student.IsEnrolled ? "checked" : "")>
+                            </div>
+                        </td>
+                    </tr>
                 }
-                <button data-studentId="@student.Id" data-shouldEnroll="@shouldEnroll" class="btn btn-@btnClass enrollemntBtn" type="button">@btnText</button>
-                
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<form asp-action="EnrollStudent" id="classEnrollmentForm">
-    <input type="hidden" id="classid" name="ClassId" value="@Model.Class.Id"/>
-    <input type="hidden" id="studentId" name="StudentId"/>
-    <input type="hidden" id="shouldEnroll" name="ShouldEnroll"/>
+<form asp-action="EnrollStudent" id="classEnrollmentForm" method="post">
+    <input type="hidden" name="ClassId" value="@Model.Class.Id" />
+    <input type="hidden" id="studentId" name="StudentId" />
+    <input type="hidden" id="shouldEnroll" name="ShouldEnroll" />
 </form>
 
-@section Scripts{
+@section Scripts {
     <script>
-        $(function(){
-            $('.table').DataTable();
-            
-            $('.enrollemntBtn').click(function(e){
+        $(document).ready(function () {
+            $('#enrollmentTable').DataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": 1 } // Disable sorting on the toggle column
+                ]
+            });
+
+            $('.enrollment-toggle').on('change', function (e) {
+                var toggle = $(this);
+                var studentId = toggle.data("studentid");
+                var shouldEnroll = toggle.is(":checked");
+                var originalState = !shouldEnroll; // The state before the user clicked
+
+                var actionText = shouldEnroll ? "enroll" : "unenroll";
+
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "Please confirm this action",
+                    text: `Please confirm you want to ${actionText} this student.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Confirm Enrollment'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var btn = $(this);
-                            var studentId = btn.attr("data-studentId");
-                            var shouldEnroll = btn.attr("data-shouldEnroll");
-                            $('#studentId').val(studentId);
-                            $('#shouldEnroll').val(shouldEnroll);
-                            $('#classEnrollmentForm').submit();
-                        }
-                    })
-            })
-        })
+                    confirmButtonText: 'Yes, Confirm'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, set values in the hidden form and submit
+                        $('#studentId').val(studentId);
+                        $('#shouldEnroll').val(shouldEnroll);
+                        $('#classEnrollmentForm').submit();
+                    } else {
+                        // If cancelled, revert the toggle switch to its original state
+                        toggle.prop('checked', originalState);
+                    }
+                });
+            });
+        });
     </script>
 }

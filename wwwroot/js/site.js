@@ -2,3 +2,9 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$(function () {
+    // Sidebar toggle functionality
+    $('#sidebar-toggle').on('click', function () {
+        $('#sidebar').toggleClass('toggled');
+    });
+});

@@ -1,40 +1,60 @@
 @model SchoolManagementApp.MVC.Data.Class
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Schedule New Class";
 }
 
-<h1>Create Class</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Classes" asp-action="Index">Classes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Schedule New Class</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="fas fa-calendar-plus me-2"></i>Schedule a New Class</h3>
+    </div>
+    <div class="card-body">
+        <form id="createClassForm" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="LecturerId" class="control-label"></label>
-                <select asp-for="LecturerId" class ="form-control" asp-items="ViewBag.LecturerId"></select>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CourseId" class="form-label fw-bold"></label>
+                    <select asp-for="CourseId" class="form-select" asp-items="ViewBag.CourseId">
+                        <option value="">-- Select a Course --</option>
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LecturerId" class="form-label fw-bold"></label>
+                    <select asp-for="LecturerId" class="form-select" asp-items="ViewBag.LecturerId">
+                        <option value="">-- Select a Lecturer --</option>
+                    </select>
+                    <span asp-validation-for="LecturerId" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class ="form-control" asp-items="ViewBag.CourseId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Time" class="control-label"></label>
-                <input asp-for="Time" class="form-control" />
-                <span asp-validation-for="Time" class="text-danger"></span>
-            </div>
-            <hr/>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Time" class="form-label fw-bold"></label>
+                    <input asp-for="Time" type="time" class="form-control" />
+                    <span asp-validation-for="Time" class="text-danger"></span>
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div class="card-footer text-end">
+        <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i>Back to List</a>
+        <button type="submit" form="createClassForm" class="btn btn-primary"><i class="fas fa-check-circle me-2"></i>Create Class</button>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
